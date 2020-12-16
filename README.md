@@ -1,3 +1,3 @@
 # lastfm-react
 
-with code from https://github.com/jeromelachaud/Last.fm-feed
+with codfe from https://lastfm.ghan.nl/export/ for gathering data
