@@ -10,6 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { getAllPages, cleanData } from '../scrape/scraper.js'
 
+
 class TopBar extends React.Component {
 
 	state = {
@@ -81,7 +82,7 @@ class TopBar extends React.Component {
                     type="search" 
                     size="small" 
                     variant="outlined" 
-                    color="secondary" 
+                    color="primary"
                     fullWidth 
                     onChange={this.updateUsername}/>
             </Grid>
@@ -93,7 +94,7 @@ class TopBar extends React.Component {
                 <Button 
                 onClick={this.scrapeData}
                 variant="contained" 
-                color="secondary" 
+                color="primary"
                 size="large"
                 {...this.state.username.length ? {disabled:false} : {disabled:true}}
                 style={{width: "100%", height:"100%"}}>Scrape Data</Button>

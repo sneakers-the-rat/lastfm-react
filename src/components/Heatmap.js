@@ -44,14 +44,19 @@ class Heatmap extends React.Component {
     let countDay = weekday === "sunday" ? i => i : i => (i + 6) % 7;
 
 
-    let formatValue = d3.format("+.2%")
+    let formatValue = d3.format("")
     let formatClose = d3.format("$,.2f")
     let formatDate = d3.utcFormat("%x")
     let formatDay = i => "SMTWTFS"[i]
     let formatMonth = d3.utcFormat("%b")
 
     let color_max = d3.quantile(data.map(d => Math.abs(d.value)).sort(d3.ascending), 0.9975);
-    let color =  d3.scaleSequential(d3.interpolatePiYG).domain([-color_max, +color_max]);
+    let color =  d3.scaleLinear().domain([0,color_max])
+        .interpolate(d3.interpolateHcl)
+        .range([d3.rgb("#111111"), d3.rgb('#e91e63')]);
+        // d3.scaleSequential(d3.interpolateRdPu).domain([0, +color_max]);
+
+
 
     function pathMonth(t) {
       const n = weekday === "weekday" ? 5 : 7;
@@ -103,24 +108,27 @@ class Heatmap extends React.Component {
       .attr("fill", d => color(d.value))
     .append("title")
       .text(d => `${formatDate(d.date)}
-    ${formatValue(d.value)}${d.close === undefined ? "" : `
-    ${formatClose(d.close)}`}`);
+    ${formatValue(d.value)} songs played`);
 
+    // debugger;
     const month = year.append("g")
     .selectAll("g")
-    .data(([, values]) => d3.utcMonths(d3.utcMonth(values[0].date), values[values.length - 1].date))
+    .data(([, values]) => d3.utcMonths(values[values.length - 1].date, d3.utcMonth(values[0].date)))
     .join("g");
+    // console.log(month);
 
     month.filter((d, i) => i).append("path")
       .attr("fill", "none")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 3)
+      .attr('class', 'month-path')
       .attr("d", pathMonth);
+
 
     month.append("text")
       .attr("x", d => timeWeek.count(d3.utcYear(d), timeWeek.ceil(d)) * cellSize + 2)
       .attr("y", -5)
       .text(formatMonth);
+
+    console.log(month);
 
     return svg.node();
 

@@ -5,10 +5,24 @@ import TopBar from './components/TopBar.js';
 import Heatmap from './components/Heatmap.js';
 import * as d3Collection from 'd3-collection';
 
+
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import purple from '@material-ui/core/colors/purple';
+import pink from '@material-ui/core/colors/pink';
 const d3 = require('d3');
 
 window.d3 = d3;
 window.d3Collection = d3Collection;
+
+
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: pink,
+    secondary: purple,
+  },
+});
 
 class App extends React.Component {
 
@@ -43,6 +57,7 @@ class App extends React.Component {
     }
 
     return(
+    <ThemeProvider theme={theme}>
     <div className="App">
       <header className="App-header">
         <TopBar sendData={this.receiveData}/>
@@ -50,6 +65,7 @@ class App extends React.Component {
 
       {view}
     </div>
+    </ThemeProvider>
     ); 
   }
 }
