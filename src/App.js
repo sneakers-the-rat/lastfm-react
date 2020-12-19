@@ -39,8 +39,8 @@ class App extends React.Component {
   receiveData(new_data){
     this.setState({data: new_data,
                    selected:'timeline'});
-    console.log('parent got data')
-    console.log(new_data)
+    // console.log('parent got data')
+    // console.log(new_data)
     // debugger;
     // create_chart(new_data)
 

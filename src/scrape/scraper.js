@@ -42,7 +42,7 @@ retryInterceptor(lfmRetry, {
 });
 
 async function getPage(username, page, cb, lfm){
-  console.log("get page" + page)
+  // console.log("get page" + page)
   const ret = await lfm.get('/', {
     params: {
       api_key: API_KEY,

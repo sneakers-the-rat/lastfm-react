@@ -1,3 +1,11 @@
+//
+// using code from
+// https://observablehq.com/@d3/calendar-view
+// and
+// https://github.com/g1eb/calendar-heatmap
+// <3
+//
+
 import React from "react";
 
 import { nest } from 'd3-collection';
@@ -14,8 +22,10 @@ class Heatmap extends React.Component {
   }
 
   componentDidMount(){
-    let data = this.props.data;
 
+    let data = this.props.data;
+    console.log('initial data');
+    console.log(data);
     data.forEach(function(d){
       d.day = new Date(
               d.date.getFullYear(), 
@@ -23,16 +33,30 @@ class Heatmap extends React.Component {
               d.date.getDate());
     })
 
+    // double nest to get each artist play per day
     data = nest()
             .key(function(d){return(d.day)})
+            .key(function(d){return(d.artist)})
             .rollup(function(d){return(d.length)})
             .entries(data);
 
+    // summarize total plays for each day
     data.forEach(function(d){
       d.date = new Date(d.key);
-    })    
+      // console.log(d);
+      d.value = d.values.reduce(function(accumulator, currentval){return(accumulator + currentval.value)}, 0);
+      //   sort values!
+      d.values = d.values.sort(function(a,b){return(b.value-a.value)});
+      // let sortable = Object.entries(d.values)
+      //     .sort(([,a],[,b]) => a-b)
+      //     .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+      // d.summary = sortable;
+    })
 
+    console.log('final data');
     console.log(data);
+
+    // console.log(data);
 
     // debugger;
     let years = d3.groups(data, d => d.date.getUTCFullYear()).reverse();
@@ -73,6 +97,10 @@ class Heatmap extends React.Component {
       .attr("font-family", "sans-serif")
       .attr("font-size", 10);
 
+    const tooltip = d3.select("#calendar-svg").append('div')
+        .attr('class', 'heatmap-tooltip')
+        .style('opacity', 0);
+
     const year = svg.selectAll("g")
     .data(years)
     .join("g")
@@ -106,9 +134,46 @@ class Heatmap extends React.Component {
       .attr("x", d => timeWeek.count(d3.utcYear(d.date), d.date) * cellSize + 0.5)
       .attr("y", d => countDay(d.date.getUTCDay()) * cellSize + 0.5)
       .attr("fill", d => color(d.value))
-    .append("title")
-      .text(d => `${formatDate(d.date)}
-    ${formatValue(d.value)} songs played`);
+      .append("title")
+      .text(function(d){
+        // debugger;
+        // console.log(d);
+        if (d.values === undefined){
+          return('');
+        }
+        var tooltip_html = '';
+        tooltip_html += 'Total songs listened:' + d.value +"\n";
+
+        if (d.values.length <= 5) {
+          for (var i = 0; i < d.values.length; i++) {
+            tooltip_html += d.values[i].key + ': ';
+            tooltip_html += d.values[i].value + '\n';
+          };
+        } else {
+          for (var i = 0; i < 5; i++) {
+            tooltip_html += d.values[i].key + ": ";
+            tooltip_html += d.values[i].value + '\n';
+          };
+          tooltip_html += '\n';
+
+          var other_projects_sum = 0;
+          for (var i = 5; i < d.values.length; i++) {
+            other_projects_sum = +d.values[i].value;
+          };
+          tooltip_html += 'Other: ';
+          tooltip_html += other_projects_sum;
+        }
+        return(tooltip_html);
+
+    // tooltip.html(tooltip_html)
+    //     .style('left', (timeWeek.count(d3.utcYear(d.date), d.date) * cellSize + 0.5)+"px")
+    //     .style('top', (countDay(d.date.getUTCDay()) * cellSize + 0.5)+"px")
+    //     .transition()
+    //     .duration(100)
+    //     .ease(d3.easeLinear)
+    //     .style('opacity', 1);
+    //   return(tooltip_html)
+      });
 
     // debugger;
     const month = year.append("g")

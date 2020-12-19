@@ -57,19 +57,19 @@ class TopBar extends React.Component {
     }
 
     updateProgress(page, pages){
-    	console.log('updateprogress: page' + page + "total pages" + pages)
+    	// console.log('updateprogress: page' + page + "total pages" + pages)
 
     	this.setState({currentPage: this.state.currentPage + 1,
     				   totalPages: pages})
 
-    	console.log("curentPage: " + this.state.currentPage + "totalPages: " + this.state.totalPages + " progress: " )
+    	// console.log("curentPage: " + this.state.currentPage + "totalPages: " + this.state.totalPages + " progress: " )
 
     	this.setState({progress: (this.state.currentPage / this.state.totalPages) * 100})
     }
 
     updateUsername(event){
     	this.setState({username:event.target.value});
-    	console.log('username:' + this.state.username);
+    	// console.log('username:' + this.state.username);
     }
 
     render(){
