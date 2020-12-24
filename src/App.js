@@ -3,7 +3,12 @@ import React from "react";
 import './styles/index.scss';
 import TopBar from './components/TopBar.js';
 import Heatmap from './components/Heatmap.js';
+import Waterfall from "./components/Waterfall";
 import * as d3Collection from 'd3-collection';
+import * as d3Array from 'd3-array';
+
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
@@ -13,6 +18,7 @@ const d3 = require('d3');
 
 window.d3 = d3;
 window.d3Collection = d3Collection;
+window.d3Array = d3Array;
 
 
 
@@ -24,6 +30,24 @@ const theme = createMuiTheme({
   },
 });
 
+class ViewButtons extends React.Component {
+
+  render(){
+      let disabled = false;
+      if (this.props.selected === "init"){
+        disabled = true;
+      }
+
+      return(
+          <ButtonGroup className="plot-selection" disabled={disabled} color="primary">
+            <Button onClick={() => {this.props.setSelected('timeline')}}>Heatmap</Button>
+            <Button onClick={() => {this.props.setSelected('waterfall')}}>Waterfall</Button>
+          </ButtonGroup>
+      )
+
+  }
+}
+
 class App extends React.Component {
 
   state = {
@@ -34,6 +58,7 @@ class App extends React.Component {
   constructor(props){
     super(props);
     this.receiveData = this.receiveData.bind(this);
+    this.setSelected = this.setSelected.bind(this);
   }
 
   receiveData(new_data){
@@ -46,14 +71,22 @@ class App extends React.Component {
 
   }
 
-
+  setSelected(new_state){
+    this.setState({selected:new_state})
+  }
 
   render(){
     let view;
+    let buttons;
+
+    let disabled = false;
     if (this.state.selected == "init"){
       view = <h1 style={{padding: '1rem'}}>Scrape some data to continue!</h1>;
+      disabled = true;
     } else if (this.state.selected == "timeline") {
       view = <Heatmap data={this.state.data} />;
+    } else if (this.state.selected == "waterfall"){
+      view = <Waterfall data={this.state.data} />;
     }
 
     return(
@@ -62,7 +95,7 @@ class App extends React.Component {
       <header className="App-header">
         <TopBar sendData={this.receiveData}/>
       </header>
-
+      <ViewButtons selected={this.state.selected} setSelected={this.setSelected}/>
       {view}
     </div>
     </ThemeProvider>

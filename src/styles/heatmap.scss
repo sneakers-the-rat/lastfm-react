@@ -6,3 +6,40 @@ text {
   stroke: $text-gray;
   stroke-width: 1;
 }
+
+.tip {
+  position: absolute;
+  font-size: .8em;
+  text-align: center;
+  padding: 1rem;
+  //text-shadow: -1px -1px 1px #ffffff, -1px 0px 1px #ffffff, -1px 1px 1px #ffffff, 0px -1px 1px #ffffff, 0px 1px 1px #ffffff, 1px -1px 1px #ffffff, 1px 0px 1px #ffffff, 1px 1px 1px #ffffff;
+
+  background-color: #000;
+
+  .head {
+    border-bottom: 1px solid white;
+    padding-bottom:0.5rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+
+
+  p {
+    color: #ffffff;
+    text-align: left;
+    margin: 0;
+
+    span.num {
+      float: right;
+      margin-left: 1rem;
+    }
+  }
+
+
+
+}
+
+rect.selected {
+  stroke: #fff;
+  stroke-width: 2px;
+}
